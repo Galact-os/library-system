@@ -5,6 +5,7 @@ import { Book } from "./types";
 import styles from "./App.module.scss";
 
 const App: React.FC = () => {
+  const maxAllowedBooks = 2;
   const initialLibrary: Book[] = [
     { id: 1, title: "Book One", copies: 3 },
     { id: 2, title: "Book Two", copies: 1 },
@@ -24,7 +25,7 @@ const App: React.FC = () => {
   const [errComp, setErrComp] = useState(<></>);
 
   const borrowBook = (book: Book) => {
-    if (borrowedBooks.length < 2) {
+    if (borrowedBooks.length < maxAllowedBooks) {
       setErrComp(<></>);
       setBorrowedBooks([...borrowedBooks, { ...book, copies: 1 }]);
       setLibrary(
@@ -38,21 +39,28 @@ const App: React.FC = () => {
   };
 
   const returnBook = (book: Book) => {
-    const returningBook = borrowedBooks.filter((b) => b.id == book.id);
-    setBorrowedBooks(
-      returningBook.length != 1
-        ? [returningBook[0]]
-        : borrowedBooks.filter((b) => b.id !== book.id)
-    );
+    setBorrowedBooks((prev) => {
+      const sameIdBook = prev.filter((a) => a.id === book.id);
+      const diffIdBooks = prev.filter((a) => a.id != book.id);
+
+      const returnArr = [
+        ...(sameIdBook.length == 1 ? [] : sameIdBook.slice(1)),
+        ...diffIdBooks,
+      ];
+      return returnArr;
+    });
+
     setLibrary((prev) => {
       const found = prev.find((b) => b.id === book.id);
-      return found
-        ? prev.map((b) =>
-            b.id === book.id ? { ...b, copies: b.copies + 1 } : b
-          )
-        : [...prev, { ...book, copies: 1 }];
+      return (
+        found
+          ? prev.map((b) =>
+              b.id === book.id ? { ...b, copies: b.copies + 1 } : b
+            )
+          : [...prev, { ...book, copies: 1 }]
+      ).sort((a, b) => a.id - b.id);
     });
-    if (borrowedBooks.length <= 2) {
+    if (borrowedBooks.length <= maxAllowedBooks) {
       setErrComp(<></>);
     }
   };
