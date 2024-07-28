@@ -1,5 +1,3 @@
-Library System - README
-
 Overview
 
 This README provides an explanation of the architectural decisions, thoughts, and assumptions made while developing the Library System using React and TypeScript.
