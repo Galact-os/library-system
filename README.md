@@ -1,46 +1,89 @@
-# Getting Started with Create React App
+Library System - README
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Overview
 
-## Available Scripts
+This README provides an explanation of the architectural decisions, thoughts, and assumptions made while developing the Library System using React and TypeScript.
 
-In the project directory, you can run:
+Technology Stack
 
-### `npm start`
+    •	React: For building the user interface.
+    •	TypeScript: For static type checking and improved developer experience.
+    •	CSS Modules: For scoped and modular styling.
+    •	SCSS: For more advanced and maintainable CSS.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Component Architecture
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The application consists of the following main components:
 
-### `npm test`
+    1.	App: The root component that holds the main state and renders other components.
+    2.	Library: Displays the list of books available in the library.
+    3.	BorrowedBooks: Shows the list of books borrowed by the user.
+    4.	BookItem: Represents a single book item, used in both the Library and BorrowedBooks components.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+App Component
 
-### `npm run build`
+    •	Manages the main state of the application, including the library and borrowed books.
+    •	Contains functions to handle borrowing and returning books.
+    •	Renders the Library and BorrowedBooks components.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Library Component
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    •	Receives the list of books and a function to handle borrowing books as props.
+    •	Displays a message if the library is empty.
+    •	Maps through the list of books and renders a BookItem for each book.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+BorrowedBooks Component
 
-### `npm run eject`
+    •	Receives the list of borrowed books and a function to handle returning books as props.
+    •	Displays a message if no books are borrowed.
+    •	Maps through the list of borrowed books and renders a BookItem for each book.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+BookItem Component
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    •	Receives a book object, an action function (borrow/return), and an action label as props.
+    •	Displays the book title and the number of copies available.
+    •	Renders a button that triggers the action function when clicked.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+State Management
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+The state is managed using React’s useState hook. The main state variables are:
 
-## Learn More
+    •	library: An array of books available in the library.
+    •	borrowedBooks: An array of books borrowed by the user.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Borrowing a Book
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    •	Checks if the user has reached the borrowing limit (2 books).
+    •	Adds the selected book to the borrowedBooks array.
+    •	Decreases the number of copies of the selected book in the library.
+    •	If the number of copies of a book in the library becomes zero, it is removed from the library array.
+
+Returning a Book
+
+    •	Removes the selected book from the borrowedBooks array.
+    •	Increases the number of copies of the selected book in the library.
+    •	If the book is not already in the library, it is added back with one copy.
+
+Styling
+
+CSS Modules and SCSS are used to style the components. This approach ensures that styles are scoped to their respective components, preventing style conflicts and making the styles easier to manage.
+
+Key Styling Decisions
+
+    •	CSS Modules: Scoped and modular styles to avoid global namespace pollution.
+    •	SCSS: Allows for nested styles and more readable and maintainable CSS.
+
+Assumptions
+
+    •	Single User Context: The application assumes a single user context for borrowing and returning books.
+    •	Borrowing Limit: A user can borrow up to 2 books at any point in time.
+    •	Single Copy Borrowing: A user can borrow only one copy of a particular book at a time.
+    •	Initial Library State: The initial state of the library is hardcoded for simplicity. In a real-world application, this would likely come from a backend API.
+
+Future Improvements
+
+    •	Backend Integration: Connect the application to a backend service to manage the library’s state and user data.
+    •	User Authentication: Implement user authentication to support multiple users.
+    •	Borrowing History: Add functionality to track the borrowing history of users.
+    •	Enhanced UI/UX: Improve the user interface and user experience with more advanced styling and animations.
+    •	Error Handling: Implement better error handling for edge cases and network failures.
